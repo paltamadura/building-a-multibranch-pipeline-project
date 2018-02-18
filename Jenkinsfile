@@ -8,6 +8,22 @@ node {
 	        stage('Test') {
 	            sh './jenkins/scripts/test.sh'
 	        }
-	    }
+	        stage('Deliver for development') {
+	   			if (env.BRANCH_NAME == 'development') {
+	                sh './jenkins/scripts/deliver-for-development.sh'
+	                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+	                sh './jenkins/scripts/kill.sh'
+	            }
+	        }
+        	stage('Deploy for production') {
+        		if (env.BRANCH_NAME == 'production') {
+        			sh './jenkins/scripts/deploy-for-production.sh'
+	                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+	                sh './jenkins/scripts/kill.sh'
+        		}
+        	}
+		}
 	}
 }
+
+
