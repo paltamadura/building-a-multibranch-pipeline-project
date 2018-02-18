@@ -14,6 +14,8 @@ node {
 	                input message: 'Finished using the web site? (Click "Proceed" to continue)'
 	                sh './jenkins/scripts/kill.sh'
 	            }
+	        } else {
+	        	sh "echo 'Branch is ${env.BRANCH_NAME}; Skipping Deliver for development'"
 	        }
 	        if (env.BRANCH_NAME == 'production') {
         		stage('Deploy for production') {
@@ -21,7 +23,9 @@ node {
 	                input message: 'Finished using the web site? (Click "Proceed" to continue)'
 	                sh './jenkins/scripts/kill.sh'
         		}
-        	}
+        	} else {
+	        	sh "echo 'Branch is ${env.BRANCH_NAME}; Skipping Deliver for production'"
+	        }
 		}
 	}
 }
