@@ -5,26 +5,29 @@ node {
 	        stage('Build') {
 	            sh 'npm install'
 	        }
+	        
 	        stage('Test') {
 	            sh './jenkins/scripts/test.sh'
 	        }
-	        if (env.BRANCH_NAME == 'development') {
-	        	stage('Deliver for development') {
+	        
+	        stage('Deliver for development') {
+	        	if (env.BRANCH_NAME == 'development') {
 	                sh './jenkins/scripts/deliver-for-development.sh'
 	                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-	                sh './jenkins/scripts/kill.sh'
-	            }
-	        } else {
-	        	sh "echo 'Branch is ${env.BRANCH_NAME}; Skipping Deliver for development'"
+	                sh './jenkins/scripts/kill.sh'   
+		        } else {
+		        	sh "echo 'Branch is ${env.BRANCH_NAME}; Skipping Deliver for development'"
+		        }
 	        }
-	        if (env.BRANCH_NAME == 'production') {
-        		stage('Deploy for production') {
+	        
+        	stage('Deploy for production') {
+        		if (env.BRANCH_NAME == 'production') {
         			sh './jenkins/scripts/deploy-for-production.sh'
 	                input message: 'Finished using the web site? (Click "Proceed" to continue)'
 	                sh './jenkins/scripts/kill.sh'
-        		}
-        	} else {
+        		} else {
 	        	sh "echo 'Branch is ${env.BRANCH_NAME}; Skipping Deliver for production'"
+	        	}
 	        }
 		}
 	}
